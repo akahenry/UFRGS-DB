@@ -12,7 +12,6 @@
 - criar id para primary key do LotacaoTurma (tá com uma tripla), EntradaCurriculo (tá com uma tripla) e PreRequisito (tá com uma quadrupla)? Criei ids pra departamento, curso e educador....
 
 ## TODO (deixados para trás)
-- mudar 'cod' pra 'codTurma' e similares
 - Guardar o horário das turmas da maneira certa
 - Políticas ON UPDATE e ON DELETE
 - Setar valores default
