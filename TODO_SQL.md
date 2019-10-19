@@ -9,8 +9,11 @@
 - Para o relacionamento bolsa-aluno, fizemos uma referencia a bolsa no aluno com uma chave estrangeira e única
 
 ## DUVIDAS
-- criar id para primary key do EntradaCurriculo (tá com uma tripla) e PreRequisito (ta com uma quadrupla)? Criei ids pra departamento, curso e educador....
+- criar id para primary key do LotacaoTurma (tá com uma tripla), EntradaCurriculo (tá com uma tripla) e PreRequisito (tá com uma quadrupla)? Criei ids pra departamento, curso e educador....
 
 ## TODO (deixados para trás)
+- mudar 'cod' pra 'codTurma' e similares
 - Guardar o horário das turmas da maneira certa
 - Políticas ON UPDATE e ON DELETE
+- Setar valores default
+- Entender e setar auto_increment nas PKs quando necessario

@@ -17,7 +17,7 @@ CREATE TABLE Habilitacao (
     creditosObrigatorios int not null,
     creditosEletivos int not null,
     creditosComplementares int not null,
-    FOREIGN KEY (codCurso) REFERENCES Curso,
+    FOREIGN KEY (codCurso) REFERENCES Curso (codCurso),
     PRIMARY KEY (idHab, codCurso)
 );
 
@@ -41,7 +41,7 @@ CREATE TABLE Disciplina (
     dataInicio int(5) not null,
     dataTermino int(5),
     codDep smallint not null,
-    FOREIGN KEY (codDep) REFERENCES Departamento,
+    FOREIGN KEY (codDep) REFERENCES Departamento (codDep),
     PRIMARY KEY (cod)
 );
 
@@ -54,6 +54,7 @@ CREATE TABLE Predio (
 CREATE TABLE Sala (
     numSala smallint not null,
     numPredio int not null,
+    FOREIGN KEY (numPredio) REFERENCES Predio (numPredio),
     PRIMARY KEY (numSala, numPredio)
 );
 
@@ -65,10 +66,10 @@ CREATE TABLE Turma (
     disc char(8) not null,
     idEdu int not null,
     idEdu2 int,
-    FOREIGN KEY (idEdu) REFERENCES Educador,
-    FOREIGN KEY (idEdu2) REFERENCES Educador,
-    FOREIGN KEY (disc) REFERENCES Disciplina,
-    FOREIGN KEY (numSala, numPredio) REFERENCES Sala,
+    FOREIGN KEY (idEdu) REFERENCES Educador (idEdu),
+    FOREIGN KEY (idEdu2) REFERENCES Educador (idEdu),
+    FOREIGN KEY (disc) REFERENCES Disciplina (cod),
+    FOREIGN KEY (numSala, numPredio) REFERENCES Sala (numSala, numPredio),
     PRIMARY KEY (cod, disc)
 );
 
@@ -86,10 +87,10 @@ CREATE TABLE Bolsa (
     contaBanco int,
     contaAgencia int,
     contaNumero int,
-    FOREIGN KEY (eduResponsavel) REFERENCES Educador,
-    FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma,
+    FOREIGN KEY (eduResponsavel) REFERENCES Educador (idEdu),
+    FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma (cod, disc),
     CHECK (tipo='ic' != (turmaMonitoriaCod is not null and turmaMonitoriaDisc is not null)), -- Se for monitoria, precisa ter turma
-    FOREIGN KEY (codDep) REFERENCES Departamento,
+    FOREIGN KEY (codDep) REFERENCES Departamento (codDep),
     PRIMARY KEY (codBolsa)
 );
 
@@ -98,8 +99,8 @@ CREATE TABLE Aluno (
     idHab smallint not null,
     codCurso smallint not null,
     codBolsa int unique,
-    FOREIGN KEY (codBolsa) REFERENCES Bolsa,
-    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao,
+    FOREIGN KEY (codBolsa) REFERENCES Bolsa (codBolsa),
+    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao (idHab, codCurso),
     PRIMARY KEY (numCartao)
 );
 
@@ -108,8 +109,9 @@ CREATE TABLE LotacaoTurma (
     numCartao int not null,
     cod varchar(2) not null,
     disc char(8) not null,
-    FOREIGN KEY (cod, disc) REFERENCES Turma,
-    FOREIGN KEY (numCartao) REFERENCES Aluno
+    FOREIGN KEY (cod, disc) REFERENCES Turma (cod, disc),
+    FOREIGN KEY (numCartao) REFERENCES Aluno (numCartao),
+    PRIMARY KEY (cod, disc, numCartao)
 );
 
 CREATE TABLE EntradaCurriculo (
@@ -120,8 +122,8 @@ CREATE TABLE EntradaCurriculo (
     obrigatoriedade ENUM('orbigatoria', 'eletiva', 'opcional') not null,
     etapa smallint,
     CHECK ((obrigatoriedade in ('eletiva', 'opcional')) != (etapa is not null)), -- Se for obrigatoria, etapa não pode ser nulo
-    FOREIGN KEY (codDisc) REFERENCES Disciplina,
-    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao,
+    FOREIGN KEY (codDisc) REFERENCES Disciplina (cod),
+    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao (idHab, codCurso),
     PRIMARY KEY (codDisc, idHab, codCurso)
 );
 
@@ -130,7 +132,7 @@ CREATE TABLE PreRequisito (
     codDisc char(8) not null,
     idHab smallint not null,
     codCurso smallint not null,
-    FOREIGN KEY (codDiscRequisito) REFERENCES Disciplina,
-    FOREIGN KEY (codDisc, idHab, codCurso) REFERENCES EntradaCurriculo,
+    FOREIGN KEY (codDiscRequisito) REFERENCES Disciplina (cod),
+    FOREIGN KEY (codDisc, idHab, codCurso) REFERENCES EntradaCurriculo (codDisc, idHab, codCurso),
     PRIMARY KEY (codDiscRequisito, codDisc, idHab, codCurso)
 );
