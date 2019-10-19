@@ -1,3 +1,9 @@
+CREATE TABLE Departamento (
+    codDep smallint not null,
+    nome varchar(70) not null,
+    PRIMARY KEY (codDep)
+);
+
 CREATE TABLE Curso (
     codCurso smallint not null,
     nome varchar(50) not null,
@@ -26,21 +32,7 @@ CREATE TABLE Educador (
     PRIMARY KEY (idEdu)
 );
 
-CREATE TABLE Aluno (
-    numCartao int not null,
-    idHab smallint not null,
-    codCurso smallint not null,
-    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao,
-    PRIMARY KEY (numCartao)
-);
 
-
-
-CREATE TABLE Departamento (
-    codDep smallint not null,
-    nome varchar(70) not null,
-    PRIMARY KEY (codDep)
-);
 
 CREATE TABLE Disciplina (
     cod char(8) not null,
@@ -80,17 +72,8 @@ CREATE TABLE Turma (
     PRIMARY KEY (cod, disc)
 );
 
--- Relacionamento Aluno-Turma
-CREATE TABLE LotacaoTurma (
-    numCartao int not null,
-    cod varchar(2) not null,
-    disc char(8) not null,
-    FOREIGN KEY (cod, disc) REFERENCES Turma,
-    FOREIGN KEY (numCartao) REFERENCES Aluno
-);
-
 CREATE TABLE Bolsa (
-    numCartao int not null,
+    codBolsa int not null,
     beneficio decimal(7,2),
     cargaHoraria int not null,
     creditos smallint not null,
@@ -107,7 +90,26 @@ CREATE TABLE Bolsa (
     FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma,
     CHECK (tipo='ic' != (turmaMonitoriaCod is not null and turmaMonitoriaDisc is not null)), -- Se for monitoria, precisa ter turma
     FOREIGN KEY (codDep) REFERENCES Departamento,
+    PRIMARY KEY (codBolsa)
+);
+
+CREATE TABLE Aluno (
+    numCartao int not null,
+    idHab smallint not null,
+    codCurso smallint not null,
+    codBolsa int unique,
+    FOREIGN KEY (codBolsa) REFERENCES Bolsa,
+    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao,
     PRIMARY KEY (numCartao)
+);
+
+-- Relacionamento Aluno-Turma
+CREATE TABLE LotacaoTurma (
+    numCartao int not null,
+    cod varchar(2) not null,
+    disc char(8) not null,
+    FOREIGN KEY (cod, disc) REFERENCES Turma,
+    FOREIGN KEY (numCartao) REFERENCES Aluno
 );
 
 CREATE TABLE EntradaCurriculo (
