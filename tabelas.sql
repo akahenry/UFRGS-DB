@@ -37,8 +37,9 @@ CREATE TABLE Aluno (
 
 
 CREATE TABLE Departamento (
+    codDep smallint not null,
     nome varchar(70) not null,
-    PRIMARY KEY (nome)
+    PRIMARY KEY (codDep)
 );
 
 CREATE TABLE Disciplina (
@@ -47,8 +48,8 @@ CREATE TABLE Disciplina (
     creditos smallint not null,
     dataInicio int(5) not null,
     dataTermino int(5),
-    dep varchar(70) not null,
-    FOREIGN KEY (dep) REFERENCES Departamento,
+    codDep smallint not null,
+    FOREIGN KEY (codDep) REFERENCES Departamento,
     PRIMARY KEY (cod)
 );
 
@@ -95,7 +96,7 @@ CREATE TABLE Bolsa (
     creditos smallint not null,
     tipo ENUM('ic', 'monitoria') not null,
     nome varchar(50),
-    dep varchar(70) not null,
+    codDep smallint not null,
     turmaMonitoriaCod varchar(2),
     turmaMonitoriaDisc char(8),
     eduResponsavel int not null,
@@ -105,7 +106,7 @@ CREATE TABLE Bolsa (
     FOREIGN KEY (eduResponsavel) REFERENCES Educador,
     FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma,
     CHECK (tipo='ic' != (turmaMonitoriaCod is not null and turmaMonitoriaDisc is not null)), -- Se for monitoria, precisa ter turma
-    FOREIGN KEY (dep) REFERENCES Departamento,
+    FOREIGN KEY (codDep) REFERENCES Departamento,
     PRIMARY KEY (numCartao)
 );
 

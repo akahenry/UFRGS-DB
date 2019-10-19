@@ -8,7 +8,7 @@
 - Criei apenas uma tabela para bolsa de graduação, Iniciação Científica e Monitoria, se chama Bolsa
 
 ## DUVIDAS
-- criar id para primary key do Departamento (tá com um varchar), EntradaCurriculo (tá com uma tripla) e PreRequisito (ta com uma quadrupla)? Criei ids pra curso e educador....
+- criar id para primary key do EntradaCurriculo (tá com uma tripla) e PreRequisito (ta com uma quadrupla)? Criei ids pra departamento, curso e educador....
 - como armazenar conta bancária? atualmente contaBanco, contaAgencia e contaNumero
 - será que deveriamos juntar bolsa com aluno? agora a chave primaria da bolsa é o cartão de um aluno, pra ter certeza de que não vai ter mais de uma bolsa por aluno
 
