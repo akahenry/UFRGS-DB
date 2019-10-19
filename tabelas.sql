@@ -1,3 +1,20 @@
+CREATE TABLE Curso (
+    codCurso smallint not null,
+    nome varchar(50) not null,
+    PRIMARY KEY (codCurso)
+);
+
+CREATE TABLE Habilitacao (
+    idHab smallint not null,
+    codCurso smallint not null,
+    nome varchar(50) not null,
+    creditosObrigatorios int not null,
+    creditosEletivos int not null,
+    creditosComplementares int not null,
+    FOREIGN KEY (codCurso) REFERENCES Curso,
+    PRIMARY KEY (idHab, codCurso)
+);
+
 CREATE TABLE Pessoa (
     CPF int not null,
     nome varchar(50) not null,
@@ -11,6 +28,9 @@ CREATE TABLE Educador (
 
 CREATE TABLE Aluno (
     numCartao int not null,
+    idHab smallint not null,
+    codCurso smallint not null,
+    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao,
     PRIMARY KEY (numCartao)
 );
 
@@ -68,8 +88,8 @@ CREATE TABLE LotacaoTurma (
     FOREIGN KEY (numCartao) REFERENCES Aluno
 );
 
-CREATE TABLE bolsa (
-    idBolsa int not null,
+CREATE TABLE Bolsa (
+    numCartao int not null,
     beneficio decimal(7,2),
     cargaHoraria int not null,
     creditos smallint not null,
@@ -84,7 +104,30 @@ CREATE TABLE bolsa (
     contaNumero int,
     FOREIGN KEY (eduResponsavel) REFERENCES Educador,
     FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma,
-    CHECK (tipo='ic' or (turmaMonitoriaCod <> null and turmaMonitoriaDisc <> null)), -- Se for monitoria, precisa ter turma
+    CHECK (tipo='ic' != (turmaMonitoriaCod is not null and turmaMonitoriaDisc is not null)), -- Se for monitoria, precisa ter turma
     FOREIGN KEY (dep) REFERENCES Departamento,
-    PRIMARY KEY (idBolsa)
+    PRIMARY KEY (numCartao)
+);
+
+CREATE TABLE EntradaCurriculo (
+    codDisc char(8) not null,
+    idHab smallint not null,
+    codCurso smallint not null,
+    requisitoCreditos smallint,
+    obrigatoriedade ENUM('orbigatoria', 'eletiva', 'opcional') not null,
+    etapa smallint,
+    CHECK ((obrigatoriedade in ('eletiva', 'opcional')) != (etapa is not null)), -- Se for obrigatoria, etapa não pode ser nulo
+    FOREIGN KEY (codDisc) REFERENCES Disciplina,
+    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao,
+    PRIMARY KEY (codDisc, idHab, codCurso)
+);
+
+CREATE TABLE PreRequisito (
+    codDiscRequisito char(8) not null,
+    codDisc char(8) not null,
+    idHab smallint not null,
+    codCurso smallint not null,
+    FOREIGN KEY (codDiscRequisito) REFERENCES Disciplina,
+    FOREIGN KEY (codDisc, idHab, codCurso) REFERENCES EntradaCurriculo,
+    PRIMARY KEY (codDiscRequisito, codDisc, idHab, codCurso)
 );
