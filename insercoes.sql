@@ -83,8 +83,24 @@ VALUES (
 
 INSERT INTO Disciplina
 VALUES (
+    'HUM01060',
+    'Lógica I - A',
+    6,
+    1,
+    471
+);
+INSERT INTO Disciplina
+VALUES (
     'HUM01085',
     'Ética I',
+    6,
+    0,
+    471
+);
+INSERT INTO Disciplina
+VALUES (
+    'HUM01087',
+    'Ética II',
     6,
     0,
     471
@@ -185,7 +201,6 @@ VALUES (
     null,
     null,
     333333333,
-    73,
     1,
     984137431
 );
@@ -202,7 +217,6 @@ VALUES (
     'HUM01085',
     111111111,
     null,
-    null,
     null
 );
 INSERT INTO Bolsa
@@ -217,7 +231,6 @@ VALUES (
     null,
     null,
     111111111,
-    101,
     2,
     347029382
 );
@@ -254,5 +267,71 @@ VALUES (
 
 INSERT INTO LotacaoTurma
 VALUES (
-    
+    301212,
+    'A',
+    'HUM01085'
+);
+INSERT INTO LotacaoTurma
+VALUES (
+    290103,
+    'U',
+    'INF05501'
+);
+INSERT INTO LotacaoTurma
+VALUES (
+    279014,
+    'U',
+    'INF01154'
+);
+
+
+INSERT INTO EntradaCurriculo
+VALUES (
+    'HUM01085',
+    101,
+    329,
+    null,
+    'obrigatoria',
+    3
+);
+INSERT INTO EntradaCurriculo
+VALUES (
+    'HUM01085',
+    41,
+    329,
+    null,
+    'obrigatoria',
+    3
+);
+INSERT INTO EntradaCurriculo
+VALUES (
+    'INF01154',
+    36,
+    305,
+    null,
+    'obrigatoria',
+    7
+);
+
+
+INSERT INTO PreRequisito
+VALUES (
+    'HUM01060',
+    'HUM01085',
+    41,
+    329
+);
+INSERT INTO PreRequisito
+VALUES (
+    'HUM01085',
+    'HUM01087',
+    41,
+    329
+);
+INSERT INTO PreRequisito
+VALUES (
+    'INF05501',
+    'INF01154',
+    36,
+    305
 );
