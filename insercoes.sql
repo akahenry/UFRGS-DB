@@ -167,8 +167,7 @@ VALUES (
     107,
     43425,
     'U',
-    'INF05501',
-    333333333
+    'INF05501'
 );
 INSERT INTO Turma
 VALUES (
@@ -177,8 +176,7 @@ VALUES (
     109,
     43425,
     'U',
-    'INF01154',
-    222222222
+    'INF01154'
 );
 INSERT INTO Turma
 VALUES (
@@ -187,8 +185,29 @@ VALUES (
     202,
     43324,
     'A',
+    'HUM01085'
+);
+
+INSERT INTO Ministracao
+VALUES (
+    333333333,
+    'U',
+    'INF05501',
+    'Pratico'
+);
+INSERT INTO Ministracao
+VALUES (
+    222222222,
+    'U',
+    'INF01154',
+    'Teorico'
+);
+INSERT INTO Ministracao
+VALUES (
+    111111111,
+    'A',
     'HUM01085',
-    111111111
+    'Teorico'
 );
 
 
