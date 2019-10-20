@@ -1,0 +1,2 @@
+INSERT INTO Departamento
+VALUES ();

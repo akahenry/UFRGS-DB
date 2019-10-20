@@ -11,14 +11,16 @@ CREATE TABLE Curso (
 );
 
 CREATE TABLE Habilitacao (
-    idHab smallint not null,
+    codHab smallint not null,
     codCurso smallint not null,
     nome varchar(50) not null,
     creditosObrigatorios int not null,
     creditosEletivos int not null,
     creditosComplementares int not null,
-    FOREIGN KEY (codCurso) REFERENCES Curso (codCurso),
-    PRIMARY KEY (idHab, codCurso)
+    FOREIGN KEY (codCurso) REFERENCES Curso (codCurso)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    PRIMARY KEY (codHab, codCurso)
 );
 
 CREATE TABLE Pessoa (
@@ -32,8 +34,6 @@ CREATE TABLE Educador (
     PRIMARY KEY (idEdu)
 );
 
-
-
 CREATE TABLE Disciplina (
     codDisc char(8) not null,
     nome varchar(70) not null,
@@ -41,10 +41,11 @@ CREATE TABLE Disciplina (
     dataInicio int(5) not null,
     dataTermino int(5),
     codDep smallint not null,
-    FOREIGN KEY (codDep) REFERENCES Departamento (codDep),
+    FOREIGN KEY (codDep) REFERENCES Departamento (codDep)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
     PRIMARY KEY (codDisc)
 );
-
 
 CREATE TABLE Predio (
     numPredio int not null,
@@ -54,27 +55,37 @@ CREATE TABLE Predio (
 CREATE TABLE Sala (
     numSala smallint not null,
     numPredio int not null,
-    FOREIGN KEY (numPredio) REFERENCES Predio (numPredio),
+    FOREIGN KEY (numPredio) REFERENCES Predio (numPredio)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
     PRIMARY KEY (numSala, numPredio)
 );
 
 CREATE TABLE Turma (
-    horario datetime not null,
-    numSala smallint not null,
+    horario varchar not null,
+    numSala smallint,
     numPredio int not null,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
-    idEdu int not null,
+    idEdu int,
     idEdu2 int,
-    FOREIGN KEY (idEdu) REFERENCES Educador (idEdu),
-    FOREIGN KEY (idEdu2) REFERENCES Educador (idEdu),
-    FOREIGN KEY (codDisc) REFERENCES Disciplina (codDisc),
-    FOREIGN KEY (numSala, numPredio) REFERENCES Sala (numSala, numPredio),
+    FOREIGN KEY (idEdu) REFERENCES Educador (idEdu)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+    FOREIGN KEY (idEdu2) REFERENCES Educador (idEdu)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+    FOREIGN KEY (codDisc) REFERENCES Disciplina (codDisc)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (numSala, numPredio) REFERENCES Sala (numSala, numPredio)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
     PRIMARY KEY (codTurma, codDisc)
 );
 
 CREATE TABLE Bolsa (
-    codBolsa int not null,
+    codBolsa int not null auto_increment,
     beneficio decimal(7,2),
     cargaHoraria int not null,
     creditos smallint not null,
@@ -87,20 +98,30 @@ CREATE TABLE Bolsa (
     contaBanco int,
     contaAgencia int,
     contaNumero int,
-    FOREIGN KEY (eduResponsavel) REFERENCES Educador (idEdu),
-    FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma (codTurma, codDisc),
+    FOREIGN KEY (eduResponsavel) REFERENCES Educador (idEdu)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma (codTurma, codDisc)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
     CHECK (tipo='ic' != (turmaMonitoriaCod is not null and turmaMonitoriaDisc is not null)), -- Se for monitoria, precisa ter turma
-    FOREIGN KEY (codDep) REFERENCES Departamento (codDep),
+    FOREIGN KEY (codDep) REFERENCES Departamento (codDep)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
     PRIMARY KEY (codBolsa)
 );
 
 CREATE TABLE Aluno (
     numCartao int not null,
-    idHab smallint not null,
-    codCurso smallint not null,
+    codHab smallint,
+    codCurso smallint,
     codBolsa int unique,
-    FOREIGN KEY (codBolsa) REFERENCES Bolsa (codBolsa),
-    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao (idHab, codCurso),
+    FOREIGN KEY (codBolsa) REFERENCES Bolsa (codBolsa)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+    FOREIGN KEY (codHab, codCurso) REFERENCES Habilitacao (codHab, codCurso)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
     PRIMARY KEY (numCartao)
 );
 
@@ -109,30 +130,43 @@ CREATE TABLE LotacaoTurma (
     numCartao int not null,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
-    FOREIGN KEY (codTurma, codDisc) REFERENCES Turma (codTurma, codDisc),
-    FOREIGN KEY (numCartao) REFERENCES Aluno (numCartao),
+    FOREIGN KEY (codTurma, codDisc) REFERENCES Turma (codTurma, codDisc)
+    ON DELETE CASCADE
+    ON UDPATE CASCADE,
+    FOREIGN KEY (numCartao) REFERENCES Aluno (numCartao)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
     PRIMARY KEY (codTurma, codDisc, numCartao)
 );
 
 CREATE TABLE EntradaCurriculo (
     codDisc char(8) not null,
-    idHab smallint not null,
+    codHab smallint not null,
     codCurso smallint not null,
     requisitoCreditos smallint,
     obrigatoriedade ENUM('orbigatoria', 'eletiva', 'opcional') not null,
     etapa smallint,
     CHECK ((obrigatoriedade in ('eletiva', 'opcional')) != (etapa is not null)), -- Se for obrigatoria, etapa não pode ser nulo
-    FOREIGN KEY (codDisc) REFERENCES Disciplina (codDisc),
-    FOREIGN KEY (idHab, codCurso) REFERENCES Habilitacao (idHab, codCurso),
-    PRIMARY KEY (codDisc, idHab, codCurso)
+    FOREIGN KEY (codDisc) REFERENCES Disciplina (codDisc)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (codHab, codCurso) REFERENCES Habilitacao (codHab, codCurso)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    PRIMARY KEY (codDisc, codHab, codCurso)
 );
 
+-- Relacionamento Disciplina-EntradaCurriculo-Habilitacao
 CREATE TABLE PreRequisito (
     codDiscRequisito char(8) not null,
     codDisc char(8) not null,
-    idHab smallint not null,
+    codHab smallint not null,
     codCurso smallint not null,
-    FOREIGN KEY (codDiscRequisito) REFERENCES Disciplina (codDisc),
-    FOREIGN KEY (codDisc, idHab, codCurso) REFERENCES EntradaCurriculo (codDisc, idHab, codCurso),
-    PRIMARY KEY (codDiscRequisito, codDisc, idHab, codCurso)
+    FOREIGN KEY (codDiscRequisito) REFERENCES Disciplina (codDisc)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (codDisc, codHab, codCurso) REFERENCES EntradaCurriculo (codDisc, codHab, codCurso)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    PRIMARY KEY (codDiscRequisito, codDisc, codHab, codCurso)
 );
