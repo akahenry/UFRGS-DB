@@ -66,14 +66,6 @@ CREATE TABLE Turma (
     numPredio int,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
-    idEdu int,
-    idEdu2 int,
-    FOREIGN KEY (idEdu) REFERENCES Educador (idEdu)
-    ON DELETE SET NULL
-    ON UPDATE CASCADE,
-    FOREIGN KEY (idEdu2) REFERENCES Educador (idEdu)
-    ON DELETE SET NULL
-    ON UPDATE CASCADE,
     FOREIGN KEY (codDisc) REFERENCES Disciplina (codDisc)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
@@ -82,6 +74,21 @@ CREATE TABLE Turma (
     ON UPDATE CASCADE,
     PRIMARY KEY (codTurma, codDisc)
 );
+
+CREATE TABLE Ministracao (
+    idEdu smallint not null,
+    codTurma varchar(2) not null,
+    codDisc char(8) not null,
+    papel char(7) not null,
+    CHECK (papel in ('Pratico', 'Teorico')),
+    FOREIGN KEY (idEdu) REFERENCES Educador (idEdu)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (codTurma, codDisc) REFERENCES Turma (codTurma, codDisc)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    PRIMARY KEY (idEdu, codTurma, codDisc)
+)
 
 CREATE TABLE Bolsa (
     codBolsa int not null auto_increment,
@@ -144,7 +151,7 @@ CREATE TABLE EntradaCurriculo (
     codHab smallint not null,
     codCurso smallint not null,
     requisitoCreditos smallint,
-    obrigatoriedade ENUM('orbigatoria', 'eletiva', 'opcional') not null,
+    obrigatoriedade ENUM('obrigatoria', 'eletiva', 'opcional') not null,
     etapa smallint,
     CHECK ((obrigatoriedade in ('eletiva', 'opcional')) != (etapa is not null)), -- Se for obrigatoria, etapa não pode ser nulo
     FOREIGN KEY (codDisc) REFERENCES Disciplina (codDisc)
@@ -163,6 +170,9 @@ CREATE TABLE PreRequisito (
     codHab smallint not null,
     codCurso smallint not null,
     FOREIGN KEY (codDiscRequisito) REFERENCES Disciplina (codDisc)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (codHab, codCurso) REFERENCES Habilitacao (codHab, codCurso)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY (codDisc, codHab, codCurso) REFERENCES EntradaCurriculo (codDisc, codHab, codCurso)
