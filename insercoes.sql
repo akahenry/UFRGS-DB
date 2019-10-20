@@ -163,6 +163,7 @@ VALUES (
 INSERT INTO Turma
 VALUES (
     'Segundas 8:30-10:10\nQuartas 8:30-10:10',
+    40,
     107,
     43425,
     'U',
@@ -172,6 +173,7 @@ VALUES (
 INSERT INTO Turma
 VALUES (
     'Terças 8:30-10:10\nQuintas 8:30-10:10',
+    32,
     109,
     43425,
     'U',
@@ -181,6 +183,7 @@ VALUES (
 INSERT INTO Turma
 VALUES (
     'Terças 10:30-12:10\nTerças 13:30-15:10\nQuintas 8:30-10:10',
+    47,
     202,
     43324,
     'A',
