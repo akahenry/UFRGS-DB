@@ -389,6 +389,15 @@ VALUES (
     'obrigatoria',
     7
 );
+INSERT INTO EntradaCurriculo
+VALUES (
+    'HUM01087',
+    41,
+    329,
+    null,
+    'eletiva',
+    null
+);
 
 
 INSERT INTO PreRequisito

@@ -25,7 +25,7 @@ CREATE TABLE Habilitacao (
 
 CREATE TABLE Educador (
     idEdu int not null,
-    CPF int(11) not null unique,
+    CPF bigint not null unique,
     nome varchar(50) not null,
     PRIMARY KEY (idEdu)
 );
@@ -76,7 +76,7 @@ CREATE TABLE Turma (
 );
 
 CREATE TABLE Ministracao (
-    idEdu smallint not null,
+    idEdu int not null,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
     papel char(7) not null,
@@ -88,7 +88,7 @@ CREATE TABLE Ministracao (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     PRIMARY KEY (idEdu, codTurma, codDisc)
-)
+);
 
 CREATE TABLE Bolsa (
     codBolsa int not null,
@@ -99,7 +99,7 @@ CREATE TABLE Bolsa (
     eduResponsavel int not null,
     contaAgencia int,
     contaNumero int,
-    CHECK (beneficio is not null and (contaAgencia is not null and contaNumero is not null)),
+    CHECK (beneficio is null or (contaAgencia is not null and contaNumero is not null)),
     FOREIGN KEY (eduResponsavel) REFERENCES Educador (idEdu)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
@@ -113,10 +113,10 @@ CREATE TABLE BolsaMonitoria (
     codBolsa int not null,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
-    FOREIGN KEY (codBolsa) REFERENCES Bolsa
+    FOREIGN KEY (codBolsa) REFERENCES Bolsa (codBolsa)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    FOREIGN KEY (codTurma, codDisc) REEFERENCES Turma
+    FOREIGN KEY (codTurma, codDisc) REFERENCES Turma (codTurma, codDisc)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -124,7 +124,7 @@ CREATE TABLE BolsaMonitoria (
 CREATE TABLE BolsaIC (
     codBolsa int not null,
     nome char(100) not null,
-    FOREIGN KEY (codBolsa) REFERENCES Bolsa
+    FOREIGN KEY (codBolsa) REFERENCES Bolsa (codBolsa)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -132,7 +132,7 @@ CREATE TABLE BolsaIC (
 
 CREATE TABLE Aluno (
     numCartao int not null,
-    CPF int(11) not null unique,
+    CPF bigint not null unique,
     nome varchar(50) not null,
     codHab smallint,
     codCurso smallint,
@@ -153,7 +153,7 @@ CREATE TABLE LotacaoTurma (
     codDisc char(8) not null,
     FOREIGN KEY (codTurma, codDisc) REFERENCES Turma (codTurma, codDisc)
     ON DELETE CASCADE
-    ON UDPATE CASCADE,
+    ON UPDATE CASCADE,
     FOREIGN KEY (numCartao) REFERENCES Aluno (numCartao)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
