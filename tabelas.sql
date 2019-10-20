@@ -46,7 +46,7 @@ CREATE TABLE Predio (
     numPredio int not null,
     latitude DECIMAL(6, 4) NOT NULL,
     longitude DECIMAL(7, 4) NOT NULL,
-    UNIQUE (lagitude, longitude),
+    UNIQUE (latitude, longitude),
     PRIMARY KEY (numPredio)
 );
 
@@ -60,7 +60,7 @@ CREATE TABLE Sala (
 );
 
 CREATE TABLE Turma (
-    horario varchar not null,
+    horario varchar(100) not null,
     vagas smallint not null,
     numSala smallint,
     numPredio int,
@@ -76,7 +76,7 @@ CREATE TABLE Turma (
 );
 
 CREATE TABLE Ministracao (
-    idEdu smallint not null,
+    idEdu int not null,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
     papel char(7) not null,
@@ -88,7 +88,7 @@ CREATE TABLE Ministracao (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     PRIMARY KEY (idEdu, codTurma, codDisc)
-)
+);
 
 CREATE TABLE Bolsa (
     codBolsa int not null auto_increment,
@@ -106,9 +106,7 @@ CREATE TABLE Bolsa (
     FOREIGN KEY (eduResponsavel) REFERENCES Educador (idEdu)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma (codTurma, codDisc)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma (codTurma, codDisc),
     CHECK (tipo='ic' != (turmaMonitoriaCod is not null and turmaMonitoriaDisc is not null)), -- Se for monitoria, precisa ter turma
     FOREIGN KEY (codDep) REFERENCES Departamento (codDep)
     ON DELETE CASCADE
