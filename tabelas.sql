@@ -25,7 +25,7 @@ CREATE TABLE Habilitacao (
 
 CREATE TABLE Educador (
     idEdu int not null,
-    CPF int(11) not null,
+    CPF int(11) not null unique,
     nome varchar(50) not null,
     PRIMARY KEY (idEdu)
 );
@@ -60,8 +60,9 @@ CREATE TABLE Sala (
 
 CREATE TABLE Turma (
     horario varchar not null,
+    vagas smallint not null,
     numSala smallint,
-    numPredio int not null,
+    numPredio int,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
     idEdu int,
@@ -92,7 +93,6 @@ CREATE TABLE Bolsa (
     turmaMonitoriaCod varchar(2),
     turmaMonitoriaDisc char(8),
     eduResponsavel int not null,
-    contaBanco int,
     contaAgencia int,
     contaNumero int,
     FOREIGN KEY (eduResponsavel) REFERENCES Educador (idEdu)
@@ -110,7 +110,7 @@ CREATE TABLE Bolsa (
 
 CREATE TABLE Aluno (
     numCartao int not null,
-    CPF int(11) not null,
+    CPF int(11) not null unique,
     nome varchar(50) not null,
     codHab smallint,
     codCurso smallint,
