@@ -46,6 +46,7 @@ CREATE TABLE Predio (
     numPredio int not null,
     latitude DECIMAL(6, 4) NOT NULL,
     longitude DECIMAL(7, 4) NOT NULL,
+    UNIQUE (lagitude, longitude),
     PRIMARY KEY (numPredio)
 );
 
