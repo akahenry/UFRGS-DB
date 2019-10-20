@@ -46,7 +46,7 @@ CREATE TABLE Predio (
     numPredio int not null,
     latitude DECIMAL(6, 4) NOT NULL,
     longitude DECIMAL(7, 4) NOT NULL,
-    UNIQUE (latitude, longitude),
+    UNIQUE (lagitude, longitude),
     PRIMARY KEY (numPredio)
 );
 
@@ -60,7 +60,7 @@ CREATE TABLE Sala (
 );
 
 CREATE TABLE Turma (
-    horario varchar(100) not null,
+    horario varchar not null,
     vagas smallint not null,
     numSala smallint,
     numPredio int,
@@ -76,7 +76,7 @@ CREATE TABLE Turma (
 );
 
 CREATE TABLE Ministracao (
-    idEdu int not null,
+    idEdu smallint not null,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
     papel char(7) not null,
@@ -88,31 +88,47 @@ CREATE TABLE Ministracao (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     PRIMARY KEY (idEdu, codTurma, codDisc)
-);
+)
 
 CREATE TABLE Bolsa (
-    codBolsa int not null auto_increment,
+    codBolsa int not null,
     beneficio decimal(7,2),
     cargaHoraria int not null,
     creditos smallint not null,
-    tipo ENUM('ic', 'monitoria') not null,
-    nome varchar(50),
     codDep smallint not null,
-    turmaMonitoriaCod varchar(2),
-    turmaMonitoriaDisc char(8),
     eduResponsavel int not null,
     contaAgencia int,
     contaNumero int,
+    CHECK (beneficio is not null and (contaAgencia is not null and contaNumero is not null)),
     FOREIGN KEY (eduResponsavel) REFERENCES Educador (idEdu)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    FOREIGN KEY (turmaMonitoriaCod, turmaMonitoriaDisc) REFERENCES Turma (codTurma, codDisc),
-    CHECK (tipo='ic' != (turmaMonitoriaCod is not null and turmaMonitoriaDisc is not null)), -- Se for monitoria, precisa ter turma
     FOREIGN KEY (codDep) REFERENCES Departamento (codDep)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     PRIMARY KEY (codBolsa)
 );
+
+CREATE TABLE BolsaMonitoria (
+    codBolsa int not null,
+    codTurma varchar(2) not null,
+    codDisc char(8) not null,
+    FOREIGN KEY (codBolsa) REFERENCES Bolsa
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (codTurma, codDisc) REEFERENCES Turma
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE BolsaIC (
+    codBolsa int not null,
+    nome char(100) not null,
+    FOREIGN KEY (codBolsa) REFERENCES Bolsa
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
 
 CREATE TABLE Aluno (
     numCartao int not null,

@@ -217,11 +217,7 @@ VALUES (
     400,
     20,
     2,
-    'ic',
-    'Pesquisa em Teoria da Computação',
     704,
-    null,
-    null,
     333333333,
     1,
     984137431
@@ -232,11 +228,7 @@ VALUES (
     null,
     30,
     3,
-    'monitoria',
-    null,
     471,
-    'A',
-    'HUM01085',
     111111111,
     null,
     null
@@ -247,16 +239,79 @@ VALUES (
     2000,
     10,
     1,
-    'ic',
-    'Experimentos de Ética',
     471,
-    null,
-    null,
     111111111,
     2,
     347029382
 );
+INSERT INTO Bolsa
+VALUES (
+    4,
+    1230,
+    15,
+    3,
+    704,
+    222222222,
+    3,
+    986001262
+);
+INSERT INTO Bolsa
+VALUES (
+    5,
+    2000,
+    10,
+    2,
+    471,
+    111111111,
+    2,
+    307528019
+);
+INSERT INTO Bolsa
+VALUES (
+    6,
+    2000,
+    10,
+    1,
+    471,
+    333333333,
+    5,
+    322109879
+);
 
+INSERT INTO BolsaIC
+VALUES (
+  2,
+  'Métodos ágeis para realização de trabalhos acadêmicos.'
+);
+INSERT INTO BolsaIC
+VALUES (
+  4,
+  'Frequência adaptativa de trabalho no sistema capitalista.'
+);
+INSERT INTO BolsaIC
+VALUES (
+  5,
+  'Porque funknejo é o futuro.'
+);
+
+INSERT INTO BolsaMonitoria
+VALUES(
+  1,
+  'U',
+  'INF01154'
+);
+INSERT INTO BolsaMonitoria
+VALUES(
+  3,
+  'U',
+  'INF05501'
+);
+INSERT INTO BolsaMonitoria
+VALUES(
+  6,
+  'A',
+  'HUM01085'
+);
 
 INSERT INTO Aluno
 VALUES (
