@@ -13,7 +13,7 @@ CREATE TABLE Curso (
 CREATE TABLE Habilitacao (
     codHab smallint not null,
     codCurso smallint not null,
-    nome varchar(50) not null,
+    nome varchar(80) not null,
     creditosObrigatorios int not null,
     creditosEletivos int not null,
     creditosComplementares int not null,
@@ -23,14 +23,10 @@ CREATE TABLE Habilitacao (
     PRIMARY KEY (codHab, codCurso)
 );
 
-CREATE TABLE Pessoa (
-    CPF int not null,
-    nome varchar(50) not null,
-    PRIMARY KEY (CPF)
-);
-
 CREATE TABLE Educador (
-    idEdu  int not null,
+    idEdu int not null,
+    CPF int(11) not null,
+    nome varchar(50) not null,
     PRIMARY KEY (idEdu)
 );
 
@@ -38,8 +34,7 @@ CREATE TABLE Disciplina (
     codDisc char(8) not null,
     nome varchar(70) not null,
     creditos smallint not null,
-    dataInicio int(5) not null,
-    dataTermino int(5),
+    ativo boolean default 1 not null,
     codDep smallint not null,
     FOREIGN KEY (codDep) REFERENCES Departamento (codDep)
     ON DELETE CASCADE
@@ -49,6 +44,8 @@ CREATE TABLE Disciplina (
 
 CREATE TABLE Predio (
     numPredio int not null,
+    latitude DECIMAL(6, 4) NOT NULL,
+    longitude DECIMAL(7, 4) NOT NULL,
     PRIMARY KEY (numPredio)
 );
 
@@ -113,6 +110,8 @@ CREATE TABLE Bolsa (
 
 CREATE TABLE Aluno (
     numCartao int not null,
+    CPF int(11) not null,
+    nome varchar(50) not null,
     codHab smallint,
     codCurso smallint,
     codBolsa int unique,
