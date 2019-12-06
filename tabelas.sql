@@ -46,7 +46,7 @@ CREATE TABLE Predio (
     numPredio int not null,
     latitude DECIMAL(6, 4) NOT NULL,
     longitude DECIMAL(7, 4) NOT NULL,
-    UNIQUE (lagitude, longitude),
+    UNIQUE (latitude, longitude),
     PRIMARY KEY (numPredio)
 );
 
@@ -60,7 +60,7 @@ CREATE TABLE Sala (
 );
 
 CREATE TABLE Turma (
-    horario varchar not null,
+    horario varchar(200) not null,
     vagas smallint not null,
     numSala smallint,
     numPredio int,

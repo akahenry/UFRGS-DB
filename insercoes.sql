@@ -353,7 +353,8 @@ INSERT INTO Matricula
 VALUES (
     290103,
     'U',
-    'INF05501'
+    'INF05501',
+    null
 );
 INSERT INTO Matricula
 VALUES (
