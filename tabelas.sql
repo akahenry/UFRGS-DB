@@ -147,10 +147,12 @@ CREATE TABLE Aluno (
 );
 
 -- Relacionamento Aluno-Turma
-CREATE TABLE LotacaoTurma (
+CREATE TABLE Matricula (
     numCartao int not null,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
+    nota varchar(2),
+    CHECK(nota in ('A', 'B', 'C', 'D', 'FF') or nota is null),
     FOREIGN KEY (codTurma, codDisc) REFERENCES Turma (codTurma, codDisc)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
