@@ -6,8 +6,8 @@ FROM Ministracao JOIN Educador USING (idEdu)
     JOIN Disciplina USING (codDisc)
 WHERE codDisc LIKE 'INF%';
 
--- Disciplinas por departamento
-SELECT codDep, codDisc
+-- Numero de disciplinas por departamento
+SELECT codDep, COUNT(DISTINCT codDisc)
 FROM Disciplina JOIN Departamento USING (codDep)
 GROUP BY codDep;
 
@@ -18,9 +18,9 @@ WHERE nota IS NULL
 GROUP BY codTurma, codDisc
 HAVING COUNT(numCartao) >= 10;
 
--- Disciplinas por grupo de matrícula
-SELECT codHab, codCurso, codDisc
-FROM EntradaCurriculo
+-- Numero de disciplinas por grupo de matrícula
+SELECT codHab, codCurso, COUNT(DISTINCT codDisc)
+FROM Habilitacao LEFT JOIN EntradaCurriculo USING (codHab, codCurso)
 GROUP BY codHab, codCurso;
 
 -- Bolsas com maior benefício

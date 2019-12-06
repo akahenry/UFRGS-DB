@@ -407,6 +407,15 @@ VALUES (
 );
 INSERT INTO EntradaCurriculo
 VALUES (
+    'INF05501',
+    36,
+    305,
+    null,
+    'obrigatoria',
+    3
+);
+INSERT INTO EntradaCurriculo
+VALUES (
     'HUM01087',
     41,
     329,
