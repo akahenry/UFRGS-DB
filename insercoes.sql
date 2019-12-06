@@ -187,6 +187,15 @@ VALUES (
     'A',
     'HUM01085'
 );
+INSERT INTO Turma
+VALUES (
+    'Segundas 8:30-10:10\nQuartas 8:30-10:10',
+    40,
+    202,
+    43324,
+    'U',
+    'HUM01060'
+);
 
 INSERT INTO Ministracao
 VALUES (
@@ -207,6 +216,13 @@ VALUES (
     111111111,
     'A',
     'HUM01085',
+    'Teorico'
+);
+INSERT INTO Ministracao
+VALUES (
+    111111111,
+    'U',
+    'HUM01060',
     'Teorico'
 );
 

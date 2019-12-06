@@ -3,8 +3,25 @@
         <title>Sistema de Inscrições</title>
     </head>
     <body>
-        {% for turma in turmas %}
-        <div><p>{{ turma[0] }} - {{ turma[1] }} - {{ turma[2] }} - {{ turma[3] }} - {{ turma[4] }} - {{ turma[5] }}</b></p></div>
-        {% endfor %}
+        <table>
+            <tr>
+                <th>Nome disciplina</th>
+                <th>creditos</th>
+                <th>cod turma</th>
+                <th>vagas</th>
+                <th>horario</th>
+                <th>prof</th>
+            </tr>
+            {% for turma in turmas %}
+            <tr>
+                <td>[{{ turma[2] }}] {{ turma[0] }}</td>
+                <td>{{ turma[1] }}</td>
+                <td>{{ turma[3] }}</td>
+                <td>{{ turma[5] }}</td>
+                <td>{{ turma[4] }}</td>
+                <td>{{ turma[8] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
     </body>
 </html>
