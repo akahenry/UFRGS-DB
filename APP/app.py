@@ -80,5 +80,39 @@ def bolsas():
 
     return render_template('bolsas.html', bolsasic=ic, bolsasmonitoria=monitorias)
 
+
+@app.route('/grupo_matricula_selector', methods=['GET', 'POST'])
+def grupoMatriculaSelector():
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
+        cur.execute('''select codHab, codCurso, nome from habilitacao''')
+        habs = cur.fetchall()
+        return render_template('grupo_matricula_selector.html', habilitacoes=habs)
+    else:
+        details = request.form
+        codHab = details['select']
+        return redirect("/horarios_grupo_matricula/{}".format(codHab))
+
+
+@app.route('/horarios_grupo_matricula/<int:codHab>')
+def horariosGrupoMatricula(codHab):
+    cur = mysql.connection.cursor()
+
+    cur.execute('''select disciplina.codDisc, disciplina.nome, turma.codTurma,
+                   turma.vagas, turma.horario, turma.numPredio, turma.numSala,
+                   educador.nome from
+                   turma
+                   join entradacurriculo using (codDisc)
+                   join disciplina using (codDisc)
+                   join ministracao on (disciplina.codDisc = ministracao.codDisc and turma.codTurma=ministracao.codTurma)
+                   join educador using (idEdu)
+                   where codHab={}'''.format(codHab))
+    turmas = cur.fetchall()
+
+    cur.execute("select nome from habilitacao where codHab={}".format(codHab))
+    habNome = cur.fetchall()
+    
+    return render_template('horarios_grupo_matricula.html', turmas=turmas, habNome=habNome)
+
 if __name__ == '__main__':
     app.run()

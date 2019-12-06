@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>{{ habNome[0][0] }} - Sistema de Inscrições</title>
+    </head>
+    <body>
+        <h1>Horários por Grupo de Matricula - {{ habNome[0][0] }}</h1>
+        <table>
+            <tr>
+                <th>Disciplina</th>
+                <th>Turma</th>
+                <th>Vagas</th>
+                <th>Horario</th>
+                <th>Local</th>
+                <th>Professor</th>
+            </tr>
+            {% for turma in turmas %}
+            <tr>
+                <td>[{{ turma[0] }}] {{ turma[1] }}</td>
+                <td>{{ turma[2] }}</td>
+                <td>{{ turma[3] }}</td>
+                <td>{{ turma[4] }} - {{ turma[5] }}</td>
+                <td>{{ turma[6] }}</td>
+                <td>{{ turma[7] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

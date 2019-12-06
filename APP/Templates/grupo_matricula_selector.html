@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>Auxiliador de Inscrições</title>
+    </head>
+    <body>
+        <form method="POST" action="">
+                Grupo de Matrícula <select name="select">
+                    {% for hab in habilitacoes %}
+                    <option value="{{ hab[0] }}">{{ hab[2] }}</option>
+                    {% endfor %}
+                </select> <br>
+                <input type="submit">
+        </form>
+    </body>
+</html>
