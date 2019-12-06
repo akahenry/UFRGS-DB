@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL
 app = Flask(__name__)
 
@@ -13,25 +13,30 @@ mysql = MySQL(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
-    # if request.method == "POST":
-    #     details = request.form
-    #     firstName = details['fname']
-    #     lastName = details['lname']
-    #     cur = mysql.connection.cursor()
-    #     cur.execute(
-    #         "INSERT INTO MyUsers(firstName, lastName) VALUES (%s, %s)", (firstName, lastName))
-    #     mysql.connection.commit()
-    #     cur.close()
-    #     return 'success'
+    if request.method == "POST":
+        details = request.form
+        cartao = details['cartao']
+        # cur = mysql.connection.cursor()
+        # cur.execute(
+        #     "INSERT INTO MyUsers(firstName, lastName) VALUES (%s, %s)", (firstName, lastName))
+        # mysql.connection.commit()
+        # cur.close()
+        return redirect("/lista/{}".format(cartao))
+    else:
+        return render_template('index.html')
 
 
-@app.route('/matricula')
-def matricula():
+@app.route('/lista/<int:cartao>')
+def lista(cartao):
+    return render_template('lista.html', cartao=cartao)
+
+
+@app.route('/matricula/<int:cartao>')
+def matricula(cartao):
     cur = mysql.connection.cursor()
-    cur.execute('''SELECT codDisc,horario,numPredio,numSala FROM turma''')
+    cur.execute('''SELECT nome FROM aluno WHERE numCartao={}'''.format(cartao))
     rv = cur.fetchall()
-    return render_template('matricula.html', turmas=rv)
+    return render_template('matricula.html', cartao=rv)
 
 
 if __name__ == '__main__':
