@@ -1,4 +1,10 @@
+# APP
+
 Aplicação que usa o banco de dados.
+
+Ela assume que o banco de dados já foi criado e se chama 'ufrgs'.
+
+## Instruções
 
 Para rodar, instale flask e flask_mysqldb usando o pip.
 
