@@ -342,23 +342,25 @@ VALUES (
     1
 );
 
-INSERT INTO LotacaoTurma
+INSERT INTO Matricula
 VALUES (
     301212,
     'A',
-    'HUM01085'
+    'HUM01085',
+    'B'
 );
-INSERT INTO LotacaoTurma
+INSERT INTO Matricula
 VALUES (
     290103,
     'U',
     'INF05501'
 );
-INSERT INTO LotacaoTurma
+INSERT INTO Matricula
 VALUES (
     279014,
     'U',
-    'INF01154'
+    'INF01154',
+    'FF'
 );
 
 
