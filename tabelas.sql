@@ -95,15 +95,11 @@ CREATE TABLE Bolsa (
     beneficio decimal(7,2),
     cargaHoraria int not null,
     creditos smallint not null,
-    codDep smallint not null,
     eduResponsavel int not null,
     contaAgencia int,
     contaNumero int,
     CHECK (beneficio is null or (contaAgencia is not null and contaNumero is not null)),
     FOREIGN KEY (eduResponsavel) REFERENCES Educador (idEdu)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-    FOREIGN KEY (codDep) REFERENCES Departamento (codDep)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     PRIMARY KEY (codBolsa)
@@ -113,10 +109,14 @@ CREATE TABLE BolsaMonitoria (
     codBolsa int not null,
     codTurma varchar(2) not null,
     codDisc char(8) not null,
+    codDep smallint not null,
     FOREIGN KEY (codBolsa) REFERENCES Bolsa (codBolsa)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY (codTurma, codDisc) REFERENCES Turma (codTurma, codDisc)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (codDep) REFERENCES Departamento (codDep)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
