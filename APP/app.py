@@ -34,9 +34,19 @@ def lista(cartao):
 @app.route('/matricula/<int:cartao>')
 def matricula(cartao):
     cur = mysql.connection.cursor()
-    cur.execute('''SELECT nome FROM aluno WHERE numCartao={}'''.format(cartao))
+    cur.execute('''select turma.codDisc, turma.codTurma, turma.horario,
+                          turma.vagas, turma.numPredio, turma.numSala from
+                   turma join matricula m using (codDisc)
+                   where codDisc not in (select codDisc from
+                                         matricula
+                                         where numCartao={})
+                   and not exists (select codDiscRequisito from
+		                           prerequisito
+                                   where codDisc=m.codDisc
+                                         and codDiscRequisito not in (select codDisc from matricula
+                                                                      where numCartao={}))'''.format(cartao,cartao))
     rv = cur.fetchall()
-    return render_template('matricula.html', cartao=rv)
+    return render_template('matricula.html', turmas=rv)
 
 
 if __name__ == '__main__':
