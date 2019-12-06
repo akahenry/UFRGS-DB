@@ -54,5 +54,31 @@ def matricula(cartao):
     return render_template('matricula.html', turmas=rv)
 
 
+@app.route('/bolsas')
+def bolsas():
+    cur = mysql.connection.cursor()
+
+    cur.execute('''select bolsa.codBolsa, bolsa.creditos, bolsa.cargaHoraria,
+                          bolsa.beneficio, bolsaic.nome, educador.nome from
+                   bolsaic
+                   join bolsa using (codBolsa)
+                   join educador on (bolsa.eduResponsavel = educador.idEdu)
+                   where codBolsa not in (select codBolsa from aluno
+                                          where codBolsa is not null)''')
+    ic = cur.fetchall()
+
+    cur.execute('''select bolsa.codBolsa, disciplina.nome, bolsamonitoria.codTurma,
+                          bolsa.creditos, bolsa.cargaHoraria, bolsa.beneficio,
+                          educador.nome from
+                   bolsamonitoria
+                   join bolsa using (codBolsa)
+                   join educador on (bolsa.eduResponsavel = educador.idEdu)
+                   join disciplina using (codDisc)
+                   where codBolsa not in (select codBolsa from aluno
+                                          where codBolsa is not null)''')
+    monitorias = cur.fetchall()
+
+    return render_template('bolsas.html', bolsasic=ic, bolsasmonitoria=monitorias)
+
 if __name__ == '__main__':
     app.run()
