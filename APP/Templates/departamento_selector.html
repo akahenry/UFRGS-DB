@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>Auxiliador de Inscrições</title>
+    </head>
+    <body>
+        <form method="POST" action="">
+                Grupo de Matrícula <select name="select">
+                    {% for dep in departamentos %}
+                    <option value="{{ dep[0] }}">{{ dep[1] }}</option>
+                    {% endfor %}
+                </select> <br>
+                <input type="submit">
+        </form>
+    </body>
+</html>

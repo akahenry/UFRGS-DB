@@ -98,6 +98,8 @@ def grupoMatriculaSelector():
 def horariosGrupoMatricula(codHab):
     cur = mysql.connection.cursor()
 
+    # Seleciona informações da disciplina, turma e nome do
+    # professor, de todas turmas de uma certa habilitação
     cur.execute('''select disciplina.codDisc, disciplina.nome, turma.codTurma,
                    turma.vagas, turma.horario, turma.numPredio, turma.numSala,
                    educador.nome from
@@ -113,6 +115,41 @@ def horariosGrupoMatricula(codHab):
     habNome = cur.fetchall()
     
     return render_template('horarios_grupo_matricula.html', turmas=turmas, habNome=habNome)
+
+@app.route('/departamento_selector', methods=['GET', 'POST'])
+def departamentoSelector():
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
+        cur.execute('''select codDep, nome from departamento''')
+        deps = cur.fetchall()
+        return render_template('departamento_selector.html', departamentos=deps)
+    else:
+        details = request.form
+        departamento = details['select']
+        return redirect("/horarios_departamento/{}".format(departamento))
+
+
+@app.route('/horarios_departamento/<int:codDep>')
+def horariosDepartamento(codDep):
+    cur = mysql.connection.cursor()
+
+    # Seleciona informações da disciplina, turma e nome do
+    # professor, de todas turmas de um certo departamento
+    cur.execute('''select disciplina.codDisc, disciplina.nome, turma.codTurma,
+                   turma.vagas, turma.horario, turma.numPredio, turma.numSala,
+                   educador.nome from
+                   turma
+                   join entradacurriculo using (codDisc)
+                   join disciplina using (codDisc)
+                   join ministracao on (disciplina.codDisc = ministracao.codDisc and turma.codTurma=ministracao.codTurma)
+                   join educador using (idEdu)
+                   where codDep={}'''.format(codDep))
+    turmas = cur.fetchall()
+
+    cur.execute("select nome from departamento where codDep={}".format(codDep))
+    depNome = cur.fetchall()
+
+    return render_template('horarios_departamento.html', turmas=turmas, depNome=depNome)
 
 if __name__ == '__main__':
     app.run()
