@@ -31,27 +31,96 @@ def lista(cartao):
     return render_template('lista.html', cartao=cartao)
 
 
-@app.route('/matricula/<int:cartao>')
+# TODO: checar notas
+@app.route('/matricula/<int:cartao>', methods=['GET', 'POST'])
 def matricula(cartao):
-    cur = mysql.connection.cursor()
-    cur.execute('''select disciplina.nome, disciplina.creditos, turma.codDisc,
-                          turma.codTurma, turma.horario, turma.vagas,
-                          turma.numPredio, turma.numSala, educador.nome from
-                   disciplina
-                   left join turma using (codDisc)
-                   left join ministracao on (ministracao.codTurma=turma.codTurma and ministracao.codDisc=turma.codDisc)
-                   left join educador using (idEdu)
-                   left join matricula m on (turma.codDisc=m.codDisc)
-                   where turma.codDisc not in (select codDisc from
-                                               matricula
-                                               where numCartao={})
-                   and not exists (select codDiscRequisito from
-		                           prerequisito
-                                   where codDisc=m.codDisc
-                                         and codDiscRequisito not in (select codDisc from matricula
-                                                                      where numCartao={}))'''.format(cartao,cartao))
-    rv = cur.fetchall()
-    return render_template('matricula.html', turmas=rv)
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
+
+        # Código de todas disciplinas que o aluno rodou ou nunca se matriculou
+        cur.execute('''select codDisc from disciplina
+                       where codDisc not in (select codDisc from matricula
+                                             where numCartao={} and
+                                                   (nota <> 'FF' and
+                                                   nota <> 'D') or
+                                                   nota is null)'''.format(cartao))
+        codsAbertos = cur.fetchall()
+
+        # Código de todas disciplinas que o aluno já fez e não rodou
+        cur.execute('''select codDisc from matricula
+                       where numCartao={} and
+                             nota <> "FF" and
+                             nota <> "D" and
+                             nota is not null'''.format(cartao))
+        feitas = cur.fetchall()
+
+        # Códigos das disciplinas cujos requisitos foram satisfeitos
+        codsElegiveis = []
+        for codTuple in codsAbertos:
+            cod = codTuple[0]
+            cur.execute('''select codDiscRequisito from prerequisito
+                           where codDisc="{}"'''.format(cod))
+            requisitos = cur.fetchall()
+            if set(requisitos).issubset(set(feitas)):
+                codsElegiveis.append(cod)
+
+        # Informações das turmas das disciplinas cujos requisitos forma satisfeitos e que tem vagas
+        turmasElegiveis = []
+        for cod in codsElegiveis:
+            cur.execute('''select d.nome, d.creditos, t.codDisc,
+                                  t.codTurma, t.horario, t.vagas,
+                                  t.numPredio, t.numSala, e.nome from
+                           disciplina d
+                           join turma t using (codDisc)
+                           join ministracao m on (m.codDisc = t.codDisc and m.codTurma = t.codTurma)
+                           join educador e using (idEdu)
+                           where t.codDisc="{}" and
+                                 t.vagas > 0'''.format(cod))
+            turmas = cur.fetchall()
+            # Não é possível concatenar pois 'turmas' é tupla
+            for turma in turmas:
+                turmasElegiveis.append(turma)
+
+        return render_template('matricula.html', turmas=turmasElegiveis)
+
+    elif request.method == 'POST':
+        turmas_list = request.form.getlist('turmas-list')
+        cur = mysql.connection.cursor()
+
+        for turma in turmas_list:
+            codDisc = turma.split('/')[0]
+            codTurma = turma.split('/')[1]
+            horarioTurma = turma.split('/')[2]
+
+            # Teste para ver se existe conflito de disciplina ou horário
+            for outraTurma in turmas_list:
+                outraCodDisc = outraTurma.split('/')[0]
+                outraCodTurma = outraTurma.split('/')[1]
+
+                if (outraCodDisc != codDisc or outraCodTurma != codTurma):
+                    outroHorario = outraTurma.split('/')[2]
+
+                    conflitaHorario = False
+                    for horario in horarioTurma.split("\n"):
+                        if horario in outroHorario:
+                            conflitaHorario = True
+
+                    if (outraCodDisc == codDisc and outraCodTurma != codTurma) or conflitaHorario:
+                        return render_template('resultado_matricula.html',
+                                            cartao=cartao,
+                                            h1="Erro!",
+                                            p="Dentre as turmas que você selecionou, há conflito de horários ou mais de uma turma para a mesma disciplina.")
+
+            # Se não deu erro de conflitos entre turmas, realiza a matricula
+            cur.execute('''insert into matricula
+                           values('{}','{}','{}',null)'''.format(cartao, codTurma, codDisc))
+            
+            mysql.connection.commit()
+        
+        return render_template('resultado_matricula.html',
+                               cartao=cartao,
+                               h1="Sucesso!",
+                               p="Sua matrícula foi realizada com sucesso.")
 
 
 @app.route('/bolsas')

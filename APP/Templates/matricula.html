@@ -3,25 +3,31 @@
         <title>Auxiliador de Inscrições</title>
     </head>
     <body>
-        <table>
-            <tr>
-                <th>Nome disciplina</th>
-                <th>creditos</th>
-                <th>cod turma</th>
-                <th>vagas</th>
-                <th>horario</th>
-                <th>prof</th>
-            </tr>
-            {% for turma in turmas %}
-            <tr>
-                <td>[{{ turma[2] }}] {{ turma[0] }}</td>
-                <td>{{ turma[1] }}</td>
-                <td>{{ turma[3] }}</td>
-                <td>{{ turma[5] }}</td>
-                <td>{{ turma[4] }}</td>
-                <td>{{ turma[8] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <form method="post" id="matricula">
+            <table>
+                <tr>
+                    <th>Matricular</th>
+                    <th>Nome disciplina</th>
+                    <th>creditos</th>
+                    <th>cod turma</th>
+                    <th>vagas</th>
+                    <th>horario</th>
+                    <th>prof</th>
+                </tr>
+
+                {% for turma in turmas %}
+                <tr>
+                    <td><input type="checkbox" name="turmas-list" value="{{ turma[2] }}/{{ turma[3] }}/{{ turma[4] }}"></td>
+                    <td>[{{ turma[2] }}] {{ turma[0] }}</td>
+                    <td>{{ turma[1] }}</td>
+                    <td>{{ turma[3] }}</td>
+                    <td>{{ turma[5] }}</td>
+                    <td>{{ turma[4] }}</td>
+                    <td>{{ turma[8] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        <input type="submit" value="Matricular" style="float:bottom;">
+        </form>
     </body>
 </html>
