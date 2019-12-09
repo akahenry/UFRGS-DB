@@ -1,0 +1,15 @@
+<html>
+    <body>
+        <table>
+            <tr>
+                <th>Disciplina</th>
+                <th>Turma</th>
+            </tr>
+            {% for turma in table %}
+            <tr>
+                <td>{{ turma[0] }}</td>
+                <td>{{ turma[1] }}</td>
+            {% endfor %}
+        </table>
+    </body>
+</html>

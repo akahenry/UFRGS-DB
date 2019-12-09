@@ -1,0 +1,29 @@
+<html>
+    <body>
+        <table>
+            <tr>
+                <th>Disciplina</th>
+                <th>Créditos</th>
+                <th>Código da disciplina</th>
+                <th>Turma</th>
+                <th>Horario</th>
+                <th>Vagas</th>
+                <th>Prédio</th>
+                <th>Sala</th>
+                <th>Professor</th>
+            </tr>
+            {% for turma in table %}
+            <tr>
+                <td>{{ turma[0] }}</td>
+                <td>{{ turma[1] }}</td>
+                <td>{{ turma[2] }}</td>
+                <td>{{ turma[3] }}</td>
+                <td>{{ turma[4] }}</td>
+                <td>{{ turma[5] }}</td>
+                <td>{{ turma[6] }}</td>
+                <td>{{ turma[7] }}</td>
+                <td>{{ turma[8] }}</td>
+            {% endfor %}
+        </table>
+    </body>
+</html>

@@ -38,17 +38,22 @@ WHERE codDisc = 'INF01154' AND nota =
     WHERE codDisc = 'INF01154');
 
 -- Todas as disciplinas e suas turmas disponíveis para um determinado cartão
-select turma.codDisc, turma.codTurma, turma.horario,
-                          turma.vagas, turma.numPredio, turma.numSala from
-                   turma join matricula m using (codDisc)
-                   where codDisc not in (select codDisc from
-                                         matricula
-                                         where numCartao=301212)
-                   and not exists (select codDiscRequisito from
-                                   prerequisito
-                                   where codDisc=m.codDisc
-                                         and codDiscRequisito not in (select codDisc from matricula
-                                                                      where numCartao=301212));
+select disciplina.nome, disciplina.creditos, turma.codDisc,
+                            turma.codTurma, turma.horario, turma.vagas,
+                            turma.numPredio, turma.numSala, educador.nome from
+                    disciplina
+                    left join turma using (codDisc)
+                    left join ministracao on (ministracao.codTurma=turma.codTurma and ministracao.codDisc=turma.codDisc)
+                    left join educador using (idEdu)
+                    left join matricula m on (turma.codDisc=m.codDisc)
+                    where turma.codDisc not in (select codDisc from
+                                                matricula
+                                                where numCartao=301212)
+                    and not exists (select codDiscRequisito from
+                                    prerequisito
+                                    where codDisc=m.codDisc
+                                            and codDiscRequisito not in (select codDisc from matricula
+                                                                         where numCartao=301212 and nota not in ("FF", "D", null)));
 
 -- Disciplinas e turmas do Bill Gates que possuem horários nas terças
 SELECT codDisc, codTurma

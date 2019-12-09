@@ -1,0 +1,14 @@
+<html>
+    <body>
+        <table>
+            <tr>
+                <th>Código da bolsa</th>
+            </tr>
+            {% for bolsa in table %}
+            <tr>
+                <td>{{ bolsa[0] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

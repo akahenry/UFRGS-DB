@@ -1,0 +1,17 @@
+<html>
+    <body>
+        <table>
+            <tr>
+                <th>Curso</th>
+                <th>Habilitação</th>
+                <th>Número de disciplinas</th>
+            </tr>
+            {% for hab in table %}
+            <tr>
+                <td>{{ hab[0] }}</td>
+                <td>{{ hab[1] }}</td>
+                <td>{{ hab[2] }}</td>
+            {% endfor %}
+        </table>
+    </body>
+</html>

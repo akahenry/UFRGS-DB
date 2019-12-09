@@ -123,31 +123,44 @@ def matricula(cartao):
                                p="Sua matrícula foi realizada com sucesso.")
 
 
-@app.route('/bolsas')
-def bolsas():
+@app.route('/bolsas/<int:cartao>', methods=['GET', 'POST'])
+def bolsas(cartao):
     cur = mysql.connection.cursor()
 
-    cur.execute('''select bolsa.codBolsa, bolsa.creditos, bolsa.cargaHoraria,
-                          bolsa.beneficio, bolsaic.nome, educador.nome from
-                   bolsaic
-                   join bolsa using (codBolsa)
-                   join educador on (bolsa.eduResponsavel = educador.idEdu)
-                   where codBolsa not in (select codBolsa from aluno
-                                          where codBolsa is not null)''')
-    ic = cur.fetchall()
+    if request.method == 'POST':
+        if request.form.get('submit_button') == "Inscrever-se para IC":
+            codBolsa = request.form.get('codBolsaIC')
+        else:
+            codBolsa = request.form.get('codBolsaMON')
+        print(codBolsa)
+        if codBolsa != None:
+            cur.execute('''update aluno set codBolsa = {} where numCartao = {}'''.format(codBolsa, cartao))
+            mysql.connection.commit()
+            return render_template('resultado_bolsa.html', cartao = cartao, h1="Sucesso!", p="Sua inscrição na bolsa foi realizada com sucesso.")
+        else:
+            return render_template('resultado_bolsa.html', cartao = cartao, h1="Erro!", p="Sua inscrição não foi efetuada pois você não selecionou uma bolsa.")
+    else:
+        cur.execute('''select bolsa.codBolsa, bolsa.creditos, bolsa.cargaHoraria,
+                            bolsa.beneficio, bolsaic.nome, educador.nome from
+                    bolsaic
+                    join bolsa using (codBolsa)
+                    join educador on (bolsa.eduResponsavel = educador.idEdu)
+                    where codBolsa not in (select codBolsa from aluno
+                                            where codBolsa is not null)''')
+        ic = cur.fetchall()
 
-    cur.execute('''select bolsa.codBolsa, disciplina.nome, bolsamonitoria.codTurma,
-                          bolsa.creditos, bolsa.cargaHoraria, bolsa.beneficio,
-                          educador.nome from
-                   bolsamonitoria
-                   join bolsa using (codBolsa)
-                   join educador on (bolsa.eduResponsavel = educador.idEdu)
-                   join disciplina using (codDisc)
-                   where codBolsa not in (select codBolsa from aluno
-                                          where codBolsa is not null)''')
-    monitorias = cur.fetchall()
+        cur.execute('''select bolsa.codBolsa, disciplina.nome, bolsamonitoria.codTurma,
+                            bolsa.creditos, bolsa.cargaHoraria, bolsa.beneficio,
+                            educador.nome from
+                    bolsamonitoria
+                    join bolsa using (codBolsa)
+                    join educador on (bolsa.eduResponsavel = educador.idEdu)
+                    join disciplina using (codDisc)
+                    where codBolsa not in (select codBolsa from aluno
+                                            where codBolsa is not null)''')
+        monitorias = cur.fetchall()
 
-    return render_template('bolsas.html', bolsasic=ic, bolsasmonitoria=monitorias)
+        return render_template('bolsas.html', bolsasic=ic, bolsasmonitoria=monitorias)
 
 
 @app.route('/grupo_matricula_selector', methods=['GET', 'POST'])
@@ -219,6 +232,160 @@ def horariosDepartamento(codDep):
     depNome = cur.fetchall()
 
     return render_template('horarios_departamento.html', turmas=turmas, depNome=depNome)
+
+@app.route('/consultas', methods=['GET', 'POST'])
+def consultas():
+    if request.method == "POST":
+        if request.form.get('submit_button') == 'Turmas que possuem pelo menos N alunos':
+            N = request.form.get('N')
+            if N != "":
+                try:
+                    int(N)
+                    return redirect('c2/{}'.format(N))
+                except:
+                    pass
+        elif request.form.get('submit_button') == 'Alunos com maiores notas em uma disciplina específica':
+            disciplina = request.form.get('disciplina')
+            if disciplina != "":
+                return redirect('c5/{}'.format(disciplina))
+        else:
+            departamento = request.form.get('departamento')
+            if departamento != "":
+                try:
+                    int(departamento)
+                    return redirect('c8/{}'.format(departamento))
+                except:
+                    pass
+    return render_template('consultas.html')
+
+
+@app.route('/c1')
+def c1():
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT codDep, COUNT(DISTINCT codDisc)
+                    FROM Disciplina JOIN Departamento USING (codDep)
+                    GROUP BY codDep''')
+    table = cur.fetchall()
+
+    return render_template('c1.html', table = table)
+
+@app.route('/c2/<int:N>')
+def c2(N):
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT codDisc, codTurma
+                    FROM Turma JOIN Matricula USING (codTurma, codDisc)
+                    WHERE nota IS NULL
+                    GROUP BY codTurma, codDisc
+                    HAVING COUNT(numCartao) >= {}'''.format(N))
+    table = cur.fetchall()
+
+    return render_template('c2.html', table = table)
+
+@app.route('/c3')
+def c3():
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT codHab, codCurso, COUNT(DISTINCT codDisc)
+                    FROM Habilitacao LEFT JOIN EntradaCurriculo USING (codHab, codCurso)
+                    GROUP BY codHab, codCurso''')
+    table = cur.fetchall()
+
+    return render_template('c3.html', table = table)
+
+@app.route('/c4')
+def c4():
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT codBolsa
+                    FROM Bolsa
+                    WHERE beneficio = ( SELECT MAX(beneficio)
+					                    FROM Bolsa)''')
+    table = cur.fetchall()
+
+    return render_template('c4.html', table = table)
+@app.route('/c5/<string:disciplina>')
+def c5(disciplina):
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT numCartao
+                    FROM Aluno JOIN Matricula USING (numCartao)
+                    WHERE codDisc = '{}' AND nota = 
+                        (SELECT MIN(nota)
+                        FROM Matricula
+                        WHERE codDisc = '{}')'''.format(disciplina, disciplina))
+    table = cur.fetchall()
+
+    return render_template('c5.html', table = table)
+
+@app.route('/c6')
+def c6():
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' select disciplina.nome, disciplina.creditos, turma.codDisc,
+                            turma.codTurma, turma.horario, turma.vagas,
+                            turma.numPredio, turma.numSala, educador.nome from
+                    disciplina
+                    left join turma using (codDisc)
+                    left join ministracao on (ministracao.codTurma=turma.codTurma and ministracao.codDisc=turma.codDisc)
+                    left join educador using (idEdu)
+                    left join matricula m on (turma.codDisc=m.codDisc)
+                    where turma.codDisc not in (select codDisc from
+                                                matricula
+                                                where numCartao=301212)
+                    and not exists (select codDiscRequisito from
+                                    prerequisito
+                                    where codDisc=m.codDisc
+                                            and codDiscRequisito not in (select codDisc from matricula
+                                                                         where numCartao=301212 and nota not in ("FF", "D", null)))''')
+    table = cur.fetchall()
+
+    return render_template('c6.html', table = table)
+
+@app.route('/c7')
+def c7():
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT codDisc, codTurma
+                    FROM TurmasDoINF
+                    WHERE nomeProfessor = 'Bill Gates' AND horario LIKE '%Terças%' ''')
+    table = cur.fetchall()
+
+    return render_template('c7.html', table = table)
+
+@app.route('/c8/<int:departamento>')
+def c8(departamento):
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT codDisc, codTurma
+                    FROM Turma JOIN Disciplina USING (codDisc)
+                    WHERE codDep = {} '''.format(departamento))
+    table = cur.fetchall()
+
+    return render_template('c8.html', table = table)
+
+@app.route('/c9')
+def c9():
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT codBolsa
+                    FROM BolsaIC
+                    WHERE nome LIKE '%Métodos ágeis%' ''')
+    table = cur.fetchall()
+
+    return render_template('c9.html', table = table)
+
+@app.route('/c10')
+def c10():
+    cur = mysql.connection.cursor()
+
+    cur.execute(''' SELECT EntradaCurriculo.codCurso, EntradaCurriculo.codHab, EntradaCurriculo.codDisc, requisitoCreditos, codDiscRequisito
+                    FROM EntradaCurriculo JOIN PreRequisito USING (codDisc)
+                    ORDER BY EntradaCurriculo.codCurso, EntradaCurriculo.codHab''')
+    table = cur.fetchall()
+
+    return render_template('c10.html', table = table)
 
 if __name__ == '__main__':
     app.run()

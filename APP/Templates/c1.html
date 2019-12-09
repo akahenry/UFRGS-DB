@@ -1,0 +1,15 @@
+<html>
+    <body>
+        <table>
+            <tr>
+                <th>Departamento</th>
+                <th>Número de disciplinas</th>
+            </tr>
+            {% for departamento in table %}
+            <tr>
+                <td>{{ departamento[0] }}</td>
+                <td>{{ departamento[1] }}</td>
+            {% endfor %}
+        </table>
+    </body>
+</html>

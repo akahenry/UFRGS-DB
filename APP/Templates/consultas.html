@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Consultas definidas no item 2</title>
+    </head>
+    <body>
+        <h1>Consultas definidas no item 2</h1>
+        <a href="/c1">Número de disciplinas por departamento</a> <br>
+        <a href="/c2/{{ N }}"></a>Turmas que possuem pelo menos N alunos</a> <br>
+        <form method="POST" action="">
+            N=<input type="text" name="N" />
+            <input type="submit" name="submit_button" value='Turmas que possuem pelo menos N alunos'>
+        </form>
+        <a href="/c3">Número de disciplinas por grupo de matrícula</a> <br>
+        <a href="/c4">Bolsas com maior benefício</a> <br>
+        <form method="POST" action="">
+            Disciplina=<input type="text" name="disciplina" />
+            <input type="submit" name="submit_button" value='Alunos com maiores notas em uma disciplina específica'>
+        </form>
+        <a href="/c6">Turmas para o cartão 301212</a> <br>
+        <a href="/c7">Disciplinas e turmas do Bill Gates que possuem horários nas terças</a> <br>
+        <form method="POST" action="">
+            Departamento=<input type="text" name="departamento" />
+            <input type="submit" name="submit_button" value='Turmas por departamento'>
+        </form>
+        <a href="/c9">Bolsas de IC com o tema 'Métodos ágeis'</a> <br>
+        <a href="/c10">Entradas de currículo e seus pré-requisitos por habilitacao</a> <br>
+    </body>
+</html>

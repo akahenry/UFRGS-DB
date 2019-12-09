@@ -5,50 +5,62 @@
     <body>
         <h1>Lista de Bolsas</h1>
         <h2>Iniciação Científica</h2>
-        <table id="ic">
-            <tr>
-                <th>Código</th>
-                <th>Créditos Complementares</th>
-                <th>Carga Horária</th>
-                <th>Benefício</th>
-                <th>Nome</th>
-                <th>Professor Responsável</th>
-            </tr>
-            {% for bolsa in bolsasic %}
-            <tr>
-                <td>{{ bolsa[0] }}</td>
-                <td>{{ bolsa[1] }}</td>
-                <td>{{ bolsa[2] }}</td>
-                <td>{{ bolsa[3] }}</td>
-                <td>{{ bolsa[4] }}</td>
-                <td>{{ bolsa[5] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        <br>
-        <br>
-        <h2>Monitoria</h2>
-        <table id="mon">
-            <tr>
-                <th>Código</th>
-                <th>Disciplina</th>
-                <th>Turma</th>
-                <th>Créditos Complementares</th>
-                <th>Carga Horária</th>
-                <th>Benefício</th>
-                <th>Professor Responsável</th>
-            </tr>
-            {% for bolsa in bolsasmonitoria %}
-            <tr>
-                <td>{{ bolsa[0] }}</td>
-                <td>{{ bolsa[1] }}</td>
-                <td>{{ bolsa[2] }}</td>
-                <td>{{ bolsa[3] }}</td>
-                <td>{{ bolsa[4] }}</td>
-                <td>{{ bolsa[5] }}</td>
-                <td>{{ bolsa[6] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <form method="POST" action="">
+            <table id="ic">
+                <tr>
+                    <th></th>
+                    <th>Código</th>
+                    <th>Créditos Complementares</th>
+                    <th>Carga Horária</th>
+                    <th>Benefício</th>
+                    <th>Nome</th>
+                    <th>Professor Responsável</th>
+                </tr>
+                {% for bolsa in bolsasic %}
+                <tr>
+                    <td><input type="radio" name="codBolsaIC" value="{{ bolsa[0] }}"></td>
+                    <td>{{ bolsa[0] }}</td>
+                    <td>{{ bolsa[1] }}</td>
+                    <td>{{ bolsa[2] }}</td>
+                    <td>{{ bolsa[3] }}</td>
+                    <td>{{ bolsa[4] }}</td>
+                    <td>{{ bolsa[5] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <center>
+                <input type="submit" name="submit_button" value="Inscrever-se para IC">
+            </center>
+            <br>
+            <br>
+            <h2>Monitoria</h2>
+            <table id="mon">
+                <tr>
+                    <th></th>
+                    <th>Código</th>
+                    <th>Disciplina</th>
+                    <th>Turma</th>
+                    <th>Créditos Complementares</th>
+                    <th>Carga Horária</th>
+                    <th>Benefício</th>
+                    <th>Professor Responsável</th>
+                </tr>
+                {% for bolsa in bolsasmonitoria %}
+                <tr>
+                    <td><input type="radio" name="codBolsaMON" value="{{ bolsa[0] }}"></td>
+                    <td>{{ bolsa[0] }}</td>
+                    <td>{{ bolsa[1] }}</td>
+                    <td>{{ bolsa[2] }}</td>
+                    <td>{{ bolsa[3] }}</td>
+                    <td>{{ bolsa[4] }}</td>
+                    <td>{{ bolsa[5] }}</td>
+                    <td>{{ bolsa[6] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <center>
+                <input type="submit" name="submit_button" value="Inscrever-se para monitoria">
+            </center>
+        </form>
     </body>
 </html>

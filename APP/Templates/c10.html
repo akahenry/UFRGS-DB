@@ -1,0 +1,21 @@
+<html>
+    <body>
+        <table>
+            <tr>
+                <th>Curso</th>
+                <th>Habilitação</th>
+                <th>Disciplina</th>
+                <th>Número de créditos necessários para se matricular na disciplina</th>
+                <th>Disciplina necessária para se matricular na disciplina</th>
+            </tr>
+            {% for entrada in table %}
+            <tr>
+                <td>{{ entrada[0] }}</td>
+                <td>{{ entrada[1] }}</td>
+                <td>{{ entrada[2] }}</td>
+                <td>{{ entrada[3] }}</td>
+                <td>{{ entrada[4] }}</td>
+            {% endfor %}
+        </table>
+    </body>
+</html>
